@@ -1,0 +1,106 @@
+create DATABASE hotel_management;
+
+CREATE  TABLE users (
+	  uid INT  AUTO_INCREMENT PRIMARY KEY ,
+	  email VARCHAR(50) NOT NULL ,
+	  name CHAR(100) NOT NULL ,
+	  password VARCHAR(20) ,
+	  confirmPassword VARCHAR(20) ,
+	  role INT,
+	  phoneNumber INT ,
+	  address VARCHAR(500)
+  );
+
+ INSERT INTO users(email,name,password,confirmPassword,phoneNumber,address) VALUES ("Vegetarian");
+
+CREATE  TABLE food_type (
+	  ftid INT  AUTO_INCREMENT PRIMARY KEY ,
+	  ftype_name varchar(40)   
+  );
+  
+  
+ INSERT INTO food_type(ftype_name) VALUES ("Vegetarian");
+ INSERT INTO food_type(ftype_name) VALUES ("Non Vegetarian");
+ INSERT INTO food_type(ftype_name) VALUES ("Others");
+ 
+ CREATE  TABLE food_category (
+	  fcid INT  AUTO_INCREMENT PRIMARY KEY ,
+	  ftid INT,
+	  fcat_name varchar(40)   
+  );
+INSERT INTO food_category(ftid,fcat_name) VALUES (1,"Italian"); 
+INSERT INTO food_category(ftid,fcat_name) VALUES (2,"Italian");
+INSERT INTO food_category(ftid,fcat_name) VALUES (1,"Indian");
+INSERT INTO food_category(ftid,fcat_name) VALUES (2,"Indian");
+INSERT INTO food_category(ftid,fcat_name) VALUES (1,"Continental");
+INSERT INTO food_category(ftid,fcat_name) VALUES (2,"Continental");
+INSERT INTO food_category(ftid,fcat_name) VALUES (1,"Mexican");
+INSERT INTO food_category(ftid,fcat_name) VALUES (2,"Mexican");
+INSERT INTO food_category(ftid,fcat_name) VALUES (1,"Thai");
+INSERT INTO food_category(ftid,fcat_name) VALUES (2,"Thai");
+
+  CREATE TABLE food_item(
+	  fid INT  AUTO_INCREMENT PRIMARY KEY ,
+	  fcid INT,
+	  food_item_name varchar(40),
+	  food_price INT,
+	  available INT
+  );
+
+ INSERT INTO food_item(fcid,food_item_name,food_price,available) VALUES (1,"Vegetable Pasta",150,10);
+ INSERT INTO food_item(fcid,food_item_name,food_price,available) VALUES (1,"Mushroom Pasta",150,10);
+ INSERT INTO food_item(fcid,food_item_name,food_price,available) VALUES (1,"Veg loaded Pizza",300,10);
+ INSERT INTO food_item(fcid,food_item_name,food_price,available) VALUES (1,"Cheese Corn Pizza",500,10);
+ INSERT INTO food_item(fcid,food_item_name,food_price,available) VALUES (1,"Mushroom Pizza",400,10);
+ INSERT INTO food_item(fcid,food_item_name,food_price,available) VALUES (3,"Paneer Steak",200,10);
+ INSERT INTO food_item(fcid,food_item_name,food_price,available) VALUES (3,"Idly",20,100);
+ 
+  CREATE TABLE order_details(
+		order_id INT  AUTO_INCREMENT PRIMARY KEY ,
+		uid INT,	
+		fid INT,
+		price INT,
+		quantity INT,
+		Order_date varchar(20),
+		status INT,
+		manager_id INT
+  );
+  
+Joining table 1, table 2
+ 
+SELECT FT.ftid,FC.fcid,FT.ftype_name, FC.fcat_name 
+FROM food_type as FT   
+INNER JOIN food_category as FC  
+ON FT.ftid = FC.ftid;
+
+ Joining table 1, table 2,3
+SELECT FT.ftid,FC.fcid,FI.fid,FT.ftype_name, FC.fcat_name, FI.food_item_name, FI.food_price,FI.available
+FROM food_type as FT   
+INNER JOIN food_category as FC  
+ON FT.ftid = FC.ftid
+INNER JOIN food_item as FI
+ON FC.fcid = FI.fcid where FI.available >0 ;
+
+SELECT OD.uid, FI.food_item_name,OD.price,OD.quantity,FI.food_price
+FROM order_details as OD
+INNER JOIN food_item as FI 
+ON OD.fid = FI.fid
+where OD.status = 1 ORDER by OD.uid
+
+
+
+SELECT DISTINCT(OD.uid), u.name 
+FROM order_details OD
+INNER JOIN users as u
+ON OD.uid = u.uid
+WHERE OD.status = 1
+
+SELECT DISTINCT(OD.uid), u.name , OD.price
+FROM order_details OD
+LEFT JOIN users as u
+ON OD.uid = u.uid
+WHERE OD.status = 1
+
+ALTER TABLE `order_details` ADD `order_no` INT NOT NULL AFTER `manager_id`;
+
+INSERT INTO `last_order` (`order_no`) VALUES ('3');
